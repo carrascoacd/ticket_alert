@@ -1,0 +1,16 @@
+require 'ticket_alert'
+
+describe TicketAlert::Tracker do
+
+  before :each do
+    @tracker = TicketAlert::Tracker.new
+  end
+
+  after :each do
+    @tracker.quit
+  end
+
+  it "check if avaiable tickets in specific date" do
+    expect(@tracker.avaiable_tickets_in? date: Time.now.strftime("%d/%m/%Y")).to eql(true)
+  end
+end
