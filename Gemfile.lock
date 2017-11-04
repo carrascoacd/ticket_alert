@@ -4,6 +4,7 @@ PATH
     ticket_alert (0.1.0)
       dotenv (~> 2.2.1)
       mail (~> 2.7.0)
+      rake
       redis (~> 4.0.1)
       watir (~> 6.8.4)
 
