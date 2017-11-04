@@ -4,7 +4,7 @@ PATH
     ticket_alert (0.1.0)
       dotenv (~> 2.2.1)
       mail (~> 2.7.0)
-      rake
+      rake (~> 10.5.0)
       redis (~> 4.0.1)
       watir (~> 6.8.4)
 
@@ -46,7 +46,6 @@ PLATFORMS
 
 DEPENDENCIES
   bundler (~> 1.16)
-  rake (~> 10.0)
   rspec (~> 3.7.0)
   ticket_alert!
 
