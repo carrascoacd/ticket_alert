@@ -4,7 +4,7 @@ module TicketAlert
 
   class Tracker
 
-    def initialize
+    def start
       @browser = Watir::Browser.new :firefox
     end
 
