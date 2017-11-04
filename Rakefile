@@ -30,6 +30,9 @@ task :find_tickets do
     if tracker.avaiable_tickets_in? date
       notifier.notify "¡Ya están disponibles los billetes para #{date}!"
       dates_to_track.delete date
+      puts "Avaiable tickes on #{date}"
+    else
+      puts "Not avaiable tickes on #{date}"
     end
   end
   tracker.quit

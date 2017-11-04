@@ -5,7 +5,7 @@ module TicketAlert
   class Tracker
 
     def start
-      @browser = Watir::Browser.new :firefox
+      @browser = Watir::Browser.new :chrome, options: { args: ['--headless'] }
     end
 
     def avaiable_tickets_in? date

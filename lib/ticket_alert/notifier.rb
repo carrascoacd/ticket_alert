@@ -18,8 +18,8 @@ module TicketAlert
 
     def notify message
       Mail.deliver   do
-        from    'simonticketalert@gmail.com'
-        to      ['carrasco.acd@gmail.com']
+        from    ENV['SENDER']
+        to      ENV['RECIPIENTS'].split(',')
         subject message
       end
     end

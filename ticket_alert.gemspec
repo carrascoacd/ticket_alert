@@ -36,5 +36,5 @@ Gem::Specification.new do |spec|
   spec.add_dependency "watir", "~> 6.8.4"
   spec.add_dependency "mail", "~> 2.7.0"
   spec.add_dependency "dotenv", "~> 2.2.1"
-  spec.add_dependency "redis"
+  spec.add_dependency "redis", "~>  4.0.1"
 end
