@@ -5,7 +5,8 @@ module TicketAlert
   class Tracker
  
     def start
-      @browser = Watir::Browser.new :phantomjs
+      browser_name = ENV.fetch('BROWSER', 'phantomjs')
+      @browser = Watir::Browser.new browser_name.to_sym
     end
 
     def avaiable_tickets_in? date
@@ -47,8 +48,7 @@ module TicketAlert
     end
     
     def avaiable_tickets?
-      message_tag = @browser.p id: 'tab-mensaje_contenido'
-      message_tag.exists? and message_tag.text.empty?
+      @browser.span(:xpath, "//span[text()='AVE']").exists?
     end
 
     def quit
