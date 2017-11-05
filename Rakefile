@@ -26,6 +26,7 @@ task :find_tickets do
   notifier.configure
 
   tracker.start
+  puts "Starting tracking..."
   dates_to_track.each do |date|
     if tracker.avaiable_tickets_in? date
       notifier.notify "¡Ya están disponibles los billetes para #{date}!"
@@ -35,6 +36,7 @@ task :find_tickets do
       puts "Not avaiable tickes on #{date}"
     end
   end
+  puts "Finishing tracking..."
   tracker.quit
 
   redis.set('dates_to_track', dates_to_track.to_json)

@@ -6,7 +6,7 @@ module TicketAlert
  
     def start
       Selenium::WebDriver::Chrome.path = ENV['GOOGLE_CHROME_BIN']
-      @browser = Watir::Browser.new :chrome, options: { args: ['--headless'] }
+      @browser = Watir::Browser.new :chrome, options: { args: ['--headless --no-sandbox --disable-gpu --remote-debugging-port=9222'] }
     end
 
     def avaiable_tickets_in? date
