@@ -37,5 +37,4 @@ Gem::Specification.new do |spec|
   spec.add_dependency "dotenv", "~> 2.2.1"
   spec.add_dependency "redis", "~>  4.0.1"
   spec.add_dependency "rake", "~> 10.5.0"
-  spec.add_dependency "headless", '~> 2.3.1'
 end
