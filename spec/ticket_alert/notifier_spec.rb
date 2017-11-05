@@ -13,7 +13,7 @@ describe TicketAlert::Notifier do
   end
 
   it "send emails to recipients" do
-    @notifier.notify "Message"
+    @notifier.notify "Title", "Message"
     is_expected.to have_sent_email
   end
 

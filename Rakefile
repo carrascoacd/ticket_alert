@@ -2,6 +2,7 @@ require "bundler/gem_tasks"
 require "ticket_alert"
 require "redis"
 require "json"
+require "digest"
 
 task :default => :spec
 
@@ -9,35 +10,38 @@ desc "Find tickets in dates"
 task :find_tickets do
   
   redis = Redis.new(url: ENV['REDIS_URL'])
+  notifier = TicketAlert::Notifier.new
+  notifier.configure
 
   listener = TicketAlert::Listener.new
   listener.configure
 
-  dates_to_track = JSON.load(redis.get('dates_to_track')) || []
+  messages_to_track = JSON.load(redis.get('messages_to_track')) || {}
 
-  dates_received = listener.last_dates_received
-  dates_received.each do |date|
-    str_date = date.strftime("%d/%m/%Y")
-    dates_to_track << str_date unless dates_to_track.include? str_date
+  messages_received = listener.last_messages_received
+  messages_received.each do |message|
+    if message.error.nil?
+      messages_to_track[message.identifier] = message
+    else
+      notifier.notify "No entiendo tu idioma :)", "Vaaya lo siento :P no entiendo el origen, destino o fecha que me indicas. Te paso un ejemplo: valencia madrid 10/10/2017"
+    end
   end
 
   tracker = TicketAlert::Tracker.new
-  notifier = TicketAlert::Notifier.new
-  notifier.configure
 
   tracker.start
   puts "Starting tracking..."
-  dates_to_track.each do |date|
-    if tracker.avaiable_tickets_in? date
-      notifier.notify "¡Ya están disponibles los billetes para #{date}!"
-      dates_to_track.delete date
-      puts "Avaiable tickes on #{date}"
+  messages_to_track.values.each do |message|
+    if tracker.avaiable_tickets_in? message.date, message.origin, message.destination
+      notifier.notify "¡Biennn ya están aquí!", "¡Ya están disponibles los billetes #{message.origin}-#{message.destination} para el #{message.date}!"
+      messages_to_track.delete message.identifier
+      puts "Avaiable tickes for #{message.origin}-#{message.destination} on #{message.date}"
     else
-      puts "Not avaiable tickes on #{date}"
+      puts "Not avaiable tickes for #{message.origin}-#{message.destination} on #{message.date}"
     end
   end
   puts "Finishing tracking..."
   tracker.quit
 
-  redis.set('dates_to_track', dates_to_track.to_json)
+  redis.set('messages_to_track', messages_to_track.to_json)
 end

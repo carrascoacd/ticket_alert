@@ -16,11 +16,12 @@ module TicketAlert
       end
     end
 
-    def notify message
+    def notify title, message
       Mail.deliver   do
         from    ENV['SENDER']
         to      ENV['RECIPIENTS'].split(',')
-        subject message
+        subject title
+        body message
       end
     end
 

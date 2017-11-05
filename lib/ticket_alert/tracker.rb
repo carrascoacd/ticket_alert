@@ -9,10 +9,10 @@ module TicketAlert
       @browser = Watir::Browser.new browser_name.to_sym
     end
 
-    def avaiable_tickets_in? date
+    def avaiable_tickets_in? date, origin, destination
       @browser.goto 'http://www.renfe.com'
       @browser.input(id: 'IdOrigen').wait_until_present
-      search_tickets_in date
+      search_tickets_in date, origin, destination
 
       retries = 0
       max_retries = 10
@@ -28,16 +28,16 @@ module TicketAlert
 
     end
 
-    def search_tickets_in date
+    def search_tickets_in date, origin, destination
       from_tag = @browser.input id: 'IdOrigen'
       to_tag = @browser.input id: 'IdDestino'
       date_tag = @browser.input id: '__fechaIdaVisual'
       buy_button = @browser.button class: %w(btn btn_home)
 
-      from_tag.send_keys 'M'
+      from_tag.send_keys origin[0]
       sleep(1)
       from_tag.send_keys :enter
-      to_tag.send_keys 'V'
+      to_tag.send_keys destination[0]
       sleep(1)
       to_tag.send_keys :enter
       date_tag.to_subtype.clear

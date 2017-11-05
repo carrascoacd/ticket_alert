@@ -11,7 +11,10 @@ describe TicketAlert::Tracker do
   end
 
   it "check if avaiable tickets in specific date" do
+    date = (Date.today + 1).strftime("%d/%m/%Y")
+    origin = "VALENCIA"
+    destination = "MADRID"
     @tracker.start
-    expect(@tracker.avaiable_tickets_in? date: (Date.today + 1).strftime("%d/%m/%Y")).to eql(true)
+    expect(@tracker.avaiable_tickets_in? date, origin, destination).to eql(true)
   end
 end
