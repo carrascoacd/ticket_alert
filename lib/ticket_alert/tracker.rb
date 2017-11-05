@@ -3,8 +3,10 @@ require 'watir'
 module TicketAlert
 
   class Tracker
-
+ 
     def start
+      Selenium::WebDriver::Chrome.path = ENV['GOOGLE_CHROME_BIN']
+      Selenium::WebDriver::Chrome.driver_path = ENV['GOOGLE_CHROME_SHIM']
       @browser = Watir::Browser.new :chrome, options: { args: ['--headless'] }
     end
 
