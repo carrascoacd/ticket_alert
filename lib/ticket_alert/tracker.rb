@@ -1,10 +1,13 @@
 require 'watir'
+require 'headless'
 
 module TicketAlert
 
   class Tracker
  
     def start
+      @headless = Headless.new
+      @headless.start
       Selenium::WebDriver::Chrome.path = ENV['GOOGLE_CHROME_BIN']
       @browser = Watir::Browser.new :chrome, options: { args: ['--no-sandbox --disable-gpu'] }
     end
@@ -54,6 +57,7 @@ module TicketAlert
 
     def quit
       @browser.quit
+      @headless.destroy
     end
 
   end
