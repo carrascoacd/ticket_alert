@@ -48,7 +48,7 @@ module TicketAlert
     end
     
     def avaiable_tickets?
-      @browser.span(:xpath, "//span[text()='AVE']").exists?
+      Watir::Wait.until(timeout: 20) { @browser.span(:xpath, "//span[text()='AVE']").exists? }
     end
 
     def quit
