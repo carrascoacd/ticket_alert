@@ -32,7 +32,7 @@ module TicketAlert
       messages_received = listener.last_messages_received
       messages_received.each do |message|
         if message.error.nil?
-          messages_to_track[message.identifier.to_sym] = message.to_h
+          messages_to_track[message.identifier] = message.to_h
         else
           notifier.notify "No entiendo tu idioma :)", "Vaaya lo siento :P no entiendo el origen, destino o fecha que me indicas. Recuerda no responder a este mensaje. Te paso un ejemplo: valencia madrid 10/10/2017"
         end
