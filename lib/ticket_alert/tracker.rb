@@ -4,7 +4,7 @@ module TicketAlert
 
   class Tracker
  
-    def start
+    def open
       browser_name = ENV.fetch('BROWSER', 'phantomjs')
       @browser = Watir::Browser.new browser_name.to_sym
     end
@@ -50,7 +50,9 @@ module TicketAlert
     def avaiable_tickets?
       avaiable_tickets = false
       begin
-        Watir::Wait.until(timeout: 20) { @browser.span(:xpath, "//span[text()='AVE']").exists? }
+        Watir::Wait.until(timeout: 20) do
+          avaiable_tickets = @browser.span(:xpath, "//span[text()='AVE']").exists? 
+        end
       rescue Watir::Wait::TimeoutError => e
       end
       avaiable_tickets

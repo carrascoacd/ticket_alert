@@ -1,34 +1,34 @@
 require "ticket_alert/listener"
 require "ticket_alert/tracker"
 require "ticket_alert/notifier"
-require "redis"
 require "json"
+require "redis"
 
 module TicketAlert
 
   class Core
 
-    def start redis=nil, listener=nil, tracker=nil, notifier=nil
+    def start redis_client=nil, listener=nil, tracker=nil, notifier=nil
       notifier = notifier || Notifier.new
       notifier.configure
       listener = listener || Listener.new
       listener.configure
-      redis = redis || Redis.new(url: ENV['REDIS_URL'])
+      redis_client = redis_client || Redis.new(url: ENV['REDIS_URL'])
       tracker = tracker || Tracker.new
       
-      messages_to_track = fetch_messages listener, notifier, redis
+      messages_to_track = fetch_messages listener, notifier, redis_client
     
       puts "Start tracking..."
-      tracker.start
+      tracker.open
       track_tickets tracker, notifier, messages_to_track
       tracker.quit
       puts "Finish tracking..."
     
-      redis.set('messages_to_track', messages_to_track.to_json)
+      redis_client.set('messages_to_track', messages_to_track.to_json)
     end
   
-    def fetch_messages listener, notifier, redis
-      messages_to_track = JSON.parse((redis.get('messages_to_track') || "{}"), symbolize_names: true)
+    def fetch_messages listener, notifier, redis_client
+      messages_to_track = JSON.parse((redis_client.get('messages_to_track') || "{}"), symbolize_names: true)
       messages_received = listener.last_messages_received
       messages_received.each do |message|
         if message.error.nil?
