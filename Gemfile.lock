@@ -47,6 +47,7 @@ PLATFORMS
 DEPENDENCIES
   bundler (~> 1.16)
   rspec (~> 3.7.0)
+  rspec-mocks (~> 3.7.0)
   ticket_alert!
 
 BUNDLED WITH

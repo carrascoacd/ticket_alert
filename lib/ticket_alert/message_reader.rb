@@ -1,11 +1,12 @@
 require 'date'
+require 'digest'
 
 module TicketAlert
 
   Message = Struct.new(:date, :origin, :destination, :error) do
 
     def identifier
-      Digest::MD5.hexdigest "#{date}#{origin}#{destination}"
+      Digest::MD5.hexdigest("#{date}#{origin}#{destination}").to_sym
     end
 
   end
