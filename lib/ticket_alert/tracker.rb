@@ -25,7 +25,6 @@ module TicketAlert
           sleep(1)
         end
       end
-
     end
 
     def search_tickets_in date, origin, destination
@@ -34,11 +33,16 @@ module TicketAlert
       date_tag = @browser.input id: '__fechaIdaVisual'
       buy_button = @browser.button class: %w(btn btn_home)
 
-      from_tag.send_keys origin[0]
+      origin.each_char do |c|
+        from_tag.send_keys c
+      end
       sleep(1)
       from_tag.send_keys :enter
-      to_tag.send_keys destination[0]
+      destination.each_char do |c|
+        to_tag.send_keys c
+      end
       sleep(1)
+      
       to_tag.send_keys :enter
       date_tag.to_subtype.clear
       date_tag.send_keys date

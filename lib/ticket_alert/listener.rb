@@ -1,7 +1,7 @@
 require 'mail'
 require 'dotenv/load'
 require 'date'
-require 'ticket_alert/message_reader'
+require 'ticket_alert/message'
 
 module TicketAlert
 
@@ -20,10 +20,9 @@ module TicketAlert
     def last_messages_received
       last_mails = Mail.find(:what => :last)
       last_messages = []
-      reader = TicketAlert::MessageReader.new
       last_mails.each do |mail|
         begin
-          message = reader.read mail.body.to_s
+          message = TicketAlert::Message.new mail.body.to_s
           last_messages << message unless message.nil?
         rescue ArgumentError
         end
