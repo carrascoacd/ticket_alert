@@ -30,7 +30,7 @@ describe TicketAlert::Core, acceptance: true do
 
   it "save the message in redis_client if not avaiable tickets yet" do
     allow(redis_client).to receive(:get).with("messages_to_track").and_return(nil)
-    allow(listener).to receive(:last_messages_received).and_return([TicketAlert::Message.new("03/03/2019", "MADRID", "VALENCIA")])
+    allow(listener).to receive(:last_messages_received).and_return([TicketAlert::Message.new("madrid valencia 03/03/2019")])
     allow(tracker).to receive(:avaiable_tickets_in?).with("03/03/2019", "MADRID", "VALENCIA").and_return(false)
     allow(notifier).to receive(:notify)
     allow(redis_client).to receive(:set)
