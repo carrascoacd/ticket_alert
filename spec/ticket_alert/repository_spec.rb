@@ -1,31 +1,39 @@
 require 'ticket_alert'
 
-describe TicketAlert::Repository do
+describe TicketAlert::Repository, here: true do
 
   let(:repository){ TicketAlert::Repository.new }
   let(:redis_client){ Redis.new }
 
   after :each do
-    repository.delete
+    repository.delete :all
   end
 
   it "save messages" do
-    repository.save [TicketAlert::Message.new("valencia madrid 29/03/2018")]
-    expect(redis_client.get(TicketAlert::Repository::KEY)).to eql("{\"58280e57be2b728d88195b3eef5ff33d\":{\"date\":\"29/03/2018\",\"origin\":\"VALENCIA\",\"destination\":\"MADRID\",\"error\":null}}")
+    expected_message = TicketAlert::Message.new("valencia madrid 29/03/2018")
+    repository.add expected_message
+    repository.save 
+    expect(redis_client.get(TicketAlert::Repository::KEY)).to eql({expected_message.id => expected_message.to_h}.to_json)
   end
 
   it "read messages"do
     expected_message = TicketAlert::Message.new("valencia madrid 29/03/2018")
-    repository.save [expected_message]
-    messages = repository.read
-    expect({expected_message.identifier => expected_message.to_h}).to eql(messages)
+    redis_client.set(TicketAlert::Repository::KEY, {expected_message.id => expected_message.to_h}.to_json)
+    repository.read
+    expect(repository.get(expected_message.id).to_h).to eql([expected_message.to_h])
   end
 
-  it "delete messages" do
+  it "delete a message" do
     expected_message = TicketAlert::Message.new("valencia madrid 29/03/2018")
-    repository.save [expected_message]
+    repository.add [expected_message]
     repository.delete expected_message.identifier
-    expect(repository.read).to eql({})
+    expect(repository.get(:all)).to eql([])
+  end
+
+  it "add a message" do
+    expected_message = TicketAlert::Message.new("valencia madrid 29/03/2018")
+    repository.add expected_message
+    expect(repository.get(:all)).to eq([expected_message])
   end
 
 end
