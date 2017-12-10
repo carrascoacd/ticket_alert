@@ -8,10 +8,8 @@ module TicketAlert
   class Core
 
     def start repository=nil, listener=nil, tracker=nil, notifier=nil
-      notifier = notifier || Notifier.new
-      notifier.configure
-      listener = listener || Listener.new
-      listener.configure
+      notifier = notifier || Notifier.new(:default)
+      listener = listener || Listener.new(:default)
       repository = repository || Repository.new
       tracker = tracker || Tracker.new
       

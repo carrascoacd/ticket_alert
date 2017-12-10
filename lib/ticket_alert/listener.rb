@@ -7,13 +7,15 @@ module TicketAlert
 
   class Listener
 
-    def configure
-      Mail.defaults do
-        retriever_method :pop3, :address    => ENV['RETRIEVER_METHOD_ADDRESS'],
-                                :port       => 995,
-                                :user_name  => ENV['RETRIEVER_METHOD_USERNAME'],
-                                :password   => ENV['RETRIEVER_METHOD_PASSWORD'],
-                                :enable_ssl => true
+    def initialize options=:default
+      if options == :default
+        Mail.defaults do
+          retriever_method :pop3, :address    => ENV['RETRIEVER_METHOD_ADDRESS'],
+                                  :port       => 995,
+                                  :user_name  => ENV['RETRIEVER_METHOD_USERNAME'],
+                                  :password   => ENV['RETRIEVER_METHOD_PASSWORD'],
+                                  :enable_ssl => true
+        end
       end
     end
 

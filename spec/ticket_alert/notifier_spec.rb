@@ -9,7 +9,7 @@ describe TicketAlert::Notifier do
 
   before :each do
     Mail::TestMailer.deliveries.clear
-    @notifier = TicketAlert::Notifier.new
+    @notifier = TicketAlert::Notifier.new(:test)
   end
 
   it "send emails to recipients" do

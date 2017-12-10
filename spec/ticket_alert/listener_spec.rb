@@ -3,7 +3,7 @@ require 'ticket_alert'
 describe TicketAlert::Listener do
 
   before :each do
-    @listener = TicketAlert::Listener.new
+    @listener = TicketAlert::Listener.new(:test)
   end 
 
   it "check if has incoming date" do

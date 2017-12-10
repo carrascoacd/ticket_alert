@@ -1,6 +1,6 @@
 require 'ticket_alert'
 
-describe TicketAlert::Core, acceptance: true do
+describe TicketAlert::Core do
   
   let(:repository) { instance_double("TicketAlert::Repository") }
   let(:notifier) { instance_double("TicketAlert::Notifier") }
@@ -9,8 +9,6 @@ describe TicketAlert::Core, acceptance: true do
   let(:core) { TicketAlert::Core.new }
 
   before :each do
-    allow(notifier).to receive(:configure)
-    allow(listener).to receive(:configure)
     allow(tracker).to receive(:open)
     allow(tracker).to receive(:quit)
   end
