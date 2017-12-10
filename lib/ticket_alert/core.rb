@@ -2,6 +2,7 @@ require "ticket_alert/listener"
 require "ticket_alert/tracker"
 require "ticket_alert/notifier"
 require "ticket_alert/repository"
+require "ticket_alert/dependency_injector"
 
 module TicketAlert
 
