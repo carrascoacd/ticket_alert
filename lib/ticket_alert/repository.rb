@@ -16,7 +16,7 @@ module TicketAlert
       if id == :all
         @messages.values
       else
-        @messages[id]
+        @messages[id.to_sym]
       end
     end
 

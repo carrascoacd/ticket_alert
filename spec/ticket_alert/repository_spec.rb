@@ -1,6 +1,6 @@
 require 'ticket_alert'
 
-describe TicketAlert::Repository, here: true do
+describe TicketAlert::Repository do
 
   let(:repository){ TicketAlert::Repository.new }
   let(:redis_client){ Redis.new }

@@ -2,7 +2,7 @@ require 'ticket_alert'
 
 describe TicketAlert::Core, acceptance: true do
   
-  let(:redis_client) { instance_double("Redis") }
+  let(:repository) { instance_double("TicketAlert::Repository") }
   let(:notifier) { instance_double("TicketAlert::Notifier") }
   let(:listener) { instance_double("TicketAlert::Listener") }
   let(:tracker) { instance_double("TicketAlert::Tracker") }
@@ -15,29 +15,37 @@ describe TicketAlert::Core, acceptance: true do
     allow(tracker).to receive(:quit)
   end
 
-  it "find avaiable tickes for stored messages in redis and delete them" do
-    allow(redis_client).to receive(:get).with("messages_to_track").and_return("{\"58280e57be2b728d88195b3eef5ff33d\":{\"date\":\"29/03/2018\",\"origin\":\"VALENCIA\",\"destination\":\"MADRID\",\"error\":null,\"date\":\"29/03/2018\",\"origin\":\"VALENCIA\",\"destination\":\"MADRID\"}}")
-    allow(listener).to receive(:last_messages_received).and_return([])
+  it "find avaiable tickes for stored messages in repository and delete them" do
+    messages = [TicketAlert::Message.new("valencia madrid 29/03/2018")]
+    allow(repository).to receive(:get).with(:all).and_return(messages)
+    new_messages = []
+    allow(listener).to receive(:last_messages_received).and_return(new_messages)
     allow(tracker).to receive(:avaiable_tickets_in?).with("29/03/2018", "VALENCIA", "MADRID").and_return(true)
     allow(notifier).to receive(:notify)
-    allow(redis_client).to receive(:set)
+    allow(repository).to receive(:add).with(new_messages)
+    allow(repository).to receive(:save)
+    allow(repository).to receive(:delete)
     
-    core.start redis_client, listener, tracker, notifier
+    core.start repository, listener, tracker, notifier
 
-    expect(redis_client).to have_received(:set).with("messages_to_track", "{}")
+    expect(repository).to have_received(:delete).with(messages[0].identifier)
+    expect(repository).to have_received(:save)
     expect(notifier).to have_received(:notify).with("¡Biennn ya están aquí!", "¡Ya están disponibles los billetes VALENCIA-MADRID para el 29/03/2018!")
   end
 
-  it "save the message in redis_client if not avaiable tickets yet" do
-    allow(redis_client).to receive(:get).with("messages_to_track").and_return(nil)
-    allow(listener).to receive(:last_messages_received).and_return([TicketAlert::Message.new("madrid valencia 03/03/2019")])
+  it "save the message in repository if not avaiable tickets yet" do
+    messages = []
+    allow(repository).to receive(:get).with(:all).and_return(messages)
+    new_messages = [TicketAlert::Message.new("madrid valencia 03/03/2019")]
+    allow(listener).to receive(:last_messages_received).and_return(new_messages)
     allow(tracker).to receive(:avaiable_tickets_in?).with("03/03/2019", "MADRID", "VALENCIA").and_return(false)
     allow(notifier).to receive(:notify)
-    allow(redis_client).to receive(:set)
+    allow(repository).to receive(:add).with(new_messages)
+    allow(repository).to receive(:save)
     
-    core.start redis_client, listener, tracker, notifier
+    core.start repository, listener, tracker, notifier
 
-    expect(redis_client).to have_received(:set).with("messages_to_track", "{\"a3c6ca342555ea17d8d29a96e799f5f9\":{\"date\":\"03/03/2019\",\"origin\":\"MADRID\",\"destination\":\"VALENCIA\",\"error\":null}}")
+    expect(repository).to have_received(:save)
   end
 
 end
