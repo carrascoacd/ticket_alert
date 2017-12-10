@@ -13,14 +13,15 @@ describe TicketAlert::Repository, here: true do
     expected_message = TicketAlert::Message.new("valencia madrid 29/03/2018")
     repository.add expected_message
     repository.save 
-    expect(redis_client.get(TicketAlert::Repository::KEY)).to eql({expected_message.id => expected_message.to_h}.to_json)
+    expect(redis_client.get(TicketAlert::Repository::KEY)).to eql({expected_message.identifier => expected_message.to_h}.to_json)
   end
 
   it "read messages"do
     expected_message = TicketAlert::Message.new("valencia madrid 29/03/2018")
-    redis_client.set(TicketAlert::Repository::KEY, {expected_message.id => expected_message.to_h}.to_json)
+    redis_client.set(TicketAlert::Repository::KEY, {expected_message.identifier => expected_message.to_h}.to_json)
     repository.read
-    expect(repository.get(expected_message.id).to_h).to eql([expected_message.to_h])
+    message = repository.get(expected_message.identifier)
+    expect(message.to_h).to eql(expected_message.to_h)
   end
 
   it "delete a message" do

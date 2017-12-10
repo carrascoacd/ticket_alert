@@ -13,34 +13,32 @@ module TicketAlert
     end
 
     def get id
-      messages_to_parse = []
       if id == :all
-        messages_to_parse = @messages
+        @messages.values
       else
-        messages_to_parse << @messages[id]
+        @messages[id]
       end
-      messages_to_parse.collect{ |m| TicketAlert::Message.new date: TODO continue }
     end
 
-    def add messages
-      if messages.is_a? Array
-        messages.each do |m|
-          @messages[m.id] = m.to_h
+    def add objects
+      if objects.is_a? Array
+        objects.each do |m|
+          @messages[m.identifier] = m
         end
       else
-        @messages[messages.id] = messages.to_h
+        @messages[objects.identifier] = objects
       end
     end
 
     def save
-      @redis_client.set(KEY, messages.to_json)
+      @redis_client.set(KEY, Hash[@messages.collect{|k,v| [k, v.to_h]}].to_json)
     end
 
     def delete id
       if id == :all
         @messages = {}
       else
-        del @messages[id]
+        @messages.delete id
       end
     end
 
