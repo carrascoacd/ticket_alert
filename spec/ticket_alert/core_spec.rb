@@ -21,6 +21,7 @@ describe TicketAlert::Core do
     allow(tracker).to receive(:avaiable_tickets_in?).with("29/03/2018", "VALENCIA", "MADRID").and_return(true)
     allow(notifier).to receive(:notify)
     allow(repository).to receive(:add).with(new_messages)
+    allow(repository).to receive(:read)
     allow(repository).to receive(:save)
     allow(repository).to receive(:delete)
     
@@ -39,6 +40,7 @@ describe TicketAlert::Core do
     allow(tracker).to receive(:avaiable_tickets_in?).with("03/03/2019", "MADRID", "VALENCIA").and_return(false)
     allow(notifier).to receive(:notify)
     allow(repository).to receive(:add).with(new_messages)
+    allow(repository).to receive(:read)
     allow(repository).to receive(:save)
     
     core.start repository, listener, tracker, notifier

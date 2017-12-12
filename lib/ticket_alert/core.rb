@@ -14,6 +14,7 @@ module TicketAlert
       repository = repository || Repository.new
       tracker = tracker || Tracker.new
       
+      repository.read
       new_messages = fetch_new_messages listener, notifier
       repository.add new_messages
     
