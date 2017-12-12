@@ -43,7 +43,16 @@ module TicketAlert
     end
 
     def read
-      @messages = JSON.parse((@redis_client.get(KEY) || "{}"), symbolize_names: true)
+      messages_as_json = JSON.parse((@redis_client.get(KEY) || "{}"), symbolize_names: true) 
+      messages_as_json.each do |k, v|
+        msg = TicketAlert::Message.new.tap do |m|
+          m.date = v[:date]
+          m.origin = v[:origin]
+          m.destination = v[:destination]
+          m.error = v[:error]        
+        end
+        @messages[k] = msg
+      end
     end
 
   end
