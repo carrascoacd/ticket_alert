@@ -48,4 +48,15 @@ describe TicketAlert::Core do
     expect(repository).to have_received(:save)
   end
 
+  it "notifies error messages and return right messages" do
+    error_message = TicketAlert::Message.new("error message")
+    ok_message = TicketAlert::Message.new("madrid valencia 03/03/2019")
+    allow(listener).to receive(:last_messages_received).and_return([ok_message, error_message])
+    allow(notifier).to receive(:notify).twice
+    
+    new_messages = core.fetch_new_messages listener, notifier
+
+    expect(new_messages).to eq([ok_message])
+  end
+
 end

@@ -28,13 +28,15 @@ module TicketAlert
     end
   
     def fetch_new_messages listener, notifier
-      new_messages = listener.last_messages_received
-      new_messages.each do |message|
-        unless message.error.nil?
-          notifier.notify "No entiendo tu idioma :)", "Vaaya lo siento :P no entiendo el origen, destino o fecha que me indicas. Recuerda no responder a este mensaje. Te paso un ejemplo: valencia madrid 10/12/2017"
-        end
+      messages = listener.last_messages_received
+      messages.reject{ |m| m.error.nil? }.each do |message|
+        notifier.notify "No entiendo tu idioma :)", "Vaaya lo siento :P no entiendo el origen, destino o fecha que me indicas. Recuerda no responder a este mensaje. Te paso un ejemplo: valencia madrid 10/12/2017"
       end
-      new_messages
+      ok_messages = messages.select{ |m| m.error.nil? }
+      ok_messages.each do |m|
+        notifier.notify "Mensaje recibido!", "He recibido la orden para #{m.origin}-#{m.destination} el #{m.date}"
+      end
+      ok_messages
     end
   
     def track_tickets tracker, notifier, repository
