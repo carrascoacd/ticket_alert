@@ -1,6 +1,6 @@
 require 'ticket_alert'
 
-describe TicketAlert::Message do
+describe TicketAlert::Message, here: true do
 
   it "reads the date, origin and destination and returns a message" do
     message = TicketAlert::Message.new " madrid valencia 10/12/2017"
@@ -9,4 +9,11 @@ describe TicketAlert::Message do
     expect(message.destination).to eql("VALENCIA")
   end
 
+  it "reads the date, origin and destination and returns a message" do
+    message = TicketAlert::Message.new " madrid - valencia - 10/12/2017"
+    expect(message.date).to eql("10/12/2017")
+    expect(message.origin).to eql("MADRID")
+    expect(message.destination).to eql("VALENCIA")
+  end
+  
 end
