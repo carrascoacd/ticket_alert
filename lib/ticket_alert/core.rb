@@ -41,7 +41,7 @@ module TicketAlert
   
     def track_tickets tracker, notifier, repository
       repository.get(:all).each do |m|
-        if tracker.avaiable_tickets_in? m.date, m.origin, m.destination
+        if tracker.avaiable_tickets_in? m
           notifier.notify "¡Biennn ya están aquí!", "¡Ya están disponibles los billetes #{m.origin}-#{m.destination} para el #{m.date}!"
           repository.delete m.identifier
           puts "Avaiable tickes for #{m.origin}-#{m.destination} on #{m.date}"

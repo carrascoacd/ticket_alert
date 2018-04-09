@@ -18,7 +18,7 @@ describe TicketAlert::Core do
     allow(repository).to receive(:get).with(:all).and_return(messages)
     new_messages = []
     allow(listener).to receive(:last_messages_received).and_return(new_messages)
-    allow(tracker).to receive(:avaiable_tickets_in?).with("29/03/2018", "VALENCIA", "MADRID").and_return(true)
+    allow(tracker).to receive(:avaiable_tickets_in?).and_return(true)
     allow(notifier).to receive(:notify)
     allow(repository).to receive(:add).with(new_messages)
     allow(repository).to receive(:read)
@@ -37,7 +37,7 @@ describe TicketAlert::Core do
     allow(repository).to receive(:get).with(:all).and_return(messages)
     new_messages = [TicketAlert::Message.new("madrid valencia 03/03/2019")]
     allow(listener).to receive(:last_messages_received).and_return(new_messages)
-    allow(tracker).to receive(:avaiable_tickets_in?).with("03/03/2019", "MADRID", "VALENCIA").and_return(false)
+    allow(tracker).to receive(:avaiable_tickets_in?).and_return(false)
     allow(notifier).to receive(:notify)
     allow(repository).to receive(:add).with(new_messages)
     allow(repository).to receive(:read)
