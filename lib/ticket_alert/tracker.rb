@@ -55,7 +55,11 @@ module TicketAlert
       avaiable_tickets = false
       begin
         Watir::Wait.until(timeout: 20) do
-          avaiable_tickets = @browser.span(:xpath, "//span[text()='AVE']").exists? 
+          avaiable_tickets = @browser.span(:xpath, "//span[text()='AVE']").exists?
+          if avaiable_tickets and message.hour
+            avaiable_tickets = @browser.span(:xpath, 
+              "//span[contains(@class, 'hour salida') and text()='#{message.hour.gsub(":", ".")}']").exists?
+          end
         end
       rescue Watir::Wait::TimeoutError => e
       end
