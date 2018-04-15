@@ -1,6 +1,6 @@
 require 'ticket_alert/repository_listener'
 
-describe TicketAlert::RepositoryListener, here: true do
+describe TicketAlert::RepositoryListener do
 
   let(:repository) { instance_double("TicketAlert::Repository") }
 

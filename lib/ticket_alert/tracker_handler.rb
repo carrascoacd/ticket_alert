@@ -6,7 +6,7 @@ require "ticket_alert/dependency_injector"
 
 module TicketAlert
 
-  class Core
+  class TrackerHandler
 
     def initialize(listeners=nil, repository=nil)
       @repository = repository || Repository.new

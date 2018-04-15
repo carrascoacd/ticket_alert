@@ -1,12 +1,12 @@
 require 'ticket_alert'
 
-describe TicketAlert::Core, here: true do
+describe TicketAlert::TrackerHandler do
   
   let(:repository) { instance_double("TicketAlert::Repository") }
   let(:listener) { double("Lisener") }
   let(:mail_reader) { instance_double("TicketAlert::mail_reader") }
   let(:tracker) { instance_double("TicketAlert::Tracker") }
-  let(:core) { TicketAlert::Core.new [listener], repository }
+  let(:tracker_handler) { TicketAlert::TrackerHandler.new [listener], repository }
 
   before :each do
     allow(tracker).to receive(:open)
@@ -22,7 +22,7 @@ describe TicketAlert::Core, here: true do
     allow(listener).to receive(:on_ticket_found)
     allow(listener).to receive(:on_new_messages)
     
-    core.start mail_reader, tracker
+    tracker_handler.start mail_reader, tracker
 
     expect(listener).to have_received(:on_ticket_found)
   end
@@ -36,7 +36,7 @@ describe TicketAlert::Core, here: true do
     allow(listener).to receive(:on_ticket_found)
     allow(listener).to receive(:on_new_messages)
     
-    core.start mail_reader, tracker
+    tracker_handler.start mail_reader, tracker
 
     expect(listener).not_to have_received(:on_ticket_found)
   end
@@ -47,7 +47,7 @@ describe TicketAlert::Core, here: true do
     allow(mail_reader).to receive(:last_messages_received).and_return([ok_message, error_message])
     allow(listener).to receive(:on_new_messages)
     
-    new_messages = core.fetch_new_messages mail_reader
+    new_messages = tracker_handler.fetch_new_messages mail_reader
 
     expect(new_messages).to eq([ok_message])
   end

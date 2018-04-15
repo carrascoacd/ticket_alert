@@ -1,6 +1,6 @@
 require 'ticket_alert/notifier_listener'
 
-describe TicketAlert::NotifierListener, here: true do
+describe TicketAlert::NotifierListener do
 
   let(:notifier) { instance_double("TicketAlert::Notifier") }
 
