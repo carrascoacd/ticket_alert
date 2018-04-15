@@ -1,12 +1,12 @@
 require 'ticket_alert'
 
-describe TicketAlert::Core do
+describe TicketAlert::Core, here: true do
   
   let(:repository) { instance_double("TicketAlert::Repository") }
-  let(:notifier) { instance_double("TicketAlert::Notifier") }
-  let(:listener) { instance_double("TicketAlert::Listener") }
+  let(:listener) { double("Lisener") }
+  let(:mail_reader) { instance_double("TicketAlert::mail_reader") }
   let(:tracker) { instance_double("TicketAlert::Tracker") }
-  let(:core) { TicketAlert::Core.new }
+  let(:core) { TicketAlert::Core.new [listener], repository }
 
   before :each do
     allow(tracker).to receive(:open)
@@ -17,44 +17,37 @@ describe TicketAlert::Core do
     messages = [TicketAlert::Message.new("valencia madrid 29/03/2018")]
     allow(repository).to receive(:get).with(:all).and_return(messages)
     new_messages = []
-    allow(listener).to receive(:last_messages_received).and_return(new_messages)
+    allow(mail_reader).to receive(:last_messages_received).and_return(new_messages)
     allow(tracker).to receive(:avaiable_tickets_in?).and_return(true)
-    allow(notifier).to receive(:notify)
-    allow(repository).to receive(:add).with(new_messages)
-    allow(repository).to receive(:read)
-    allow(repository).to receive(:save)
-    allow(repository).to receive(:delete)
+    allow(listener).to receive(:on_ticket_found)
+    allow(listener).to receive(:on_new_messages)
     
-    core.start repository, listener, tracker, notifier
+    core.start mail_reader, tracker
 
-    expect(repository).to have_received(:delete).with(messages[0].identifier)
-    expect(repository).to have_received(:save)
-    expect(notifier).to have_received(:notify).with("¡Biennn ya están aquí!", "¡Ya están disponibles los billetes VALENCIA-MADRID para el 29/03/2018!")
+    expect(listener).to have_received(:on_ticket_found)
   end
 
   it "save the message in repository if not avaiable tickets yet" do
     messages = []
     allow(repository).to receive(:get).with(:all).and_return(messages)
     new_messages = [TicketAlert::Message.new("madrid valencia 03/03/2019")]
-    allow(listener).to receive(:last_messages_received).and_return(new_messages)
+    allow(mail_reader).to receive(:last_messages_received).and_return(new_messages)
     allow(tracker).to receive(:avaiable_tickets_in?).and_return(false)
-    allow(notifier).to receive(:notify)
-    allow(repository).to receive(:add).with(new_messages)
-    allow(repository).to receive(:read)
-    allow(repository).to receive(:save)
+    allow(listener).to receive(:on_ticket_found)
+    allow(listener).to receive(:on_new_messages)
     
-    core.start repository, listener, tracker, notifier
+    core.start mail_reader, tracker
 
-    expect(repository).to have_received(:save)
+    expect(listener).not_to have_received(:on_ticket_found)
   end
 
   it "notifies error messages and return right messages" do
     error_message = TicketAlert::Message.new("error message")
     ok_message = TicketAlert::Message.new("madrid valencia 03/03/2019")
-    allow(listener).to receive(:last_messages_received).and_return([ok_message, error_message])
-    allow(notifier).to receive(:notify).twice
+    allow(mail_reader).to receive(:last_messages_received).and_return([ok_message, error_message])
+    allow(listener).to receive(:on_new_messages)
     
-    new_messages = core.fetch_new_messages listener, notifier
+    new_messages = core.fetch_new_messages mail_reader
 
     expect(new_messages).to eq([ok_message])
   end

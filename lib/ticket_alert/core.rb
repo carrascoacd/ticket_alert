@@ -1,49 +1,44 @@
 require "ticket_alert/mail_reader"
 require "ticket_alert/tracker"
-require "ticket_alert/notifier"
-require "ticket_alert/repository"
+require "ticket_alert/notifier_listener"
+require "ticket_alert/repository_listener"
 require "ticket_alert/dependency_injector"
 
 module TicketAlert
 
   class Core
 
-    def start repository=nil, listener=nil, tracker=nil, notifier=nil
-      notifier = notifier || Notifier.new(:default)
-      listener = listener || MailReader.new(:default)
-      repository = repository || Repository.new
+    def initialize(listeners=nil, repository=nil)
+      @repository = repository || Repository.new
+      @listeners = listeners || [ NotifierListener.new, 
+                                  RepositoryListener.new(@repository)]
+    end
+
+    def start mail_reader=nil, tracker=nil
+      mail_reader =  mail_reader || MailReader.new(:default)
       tracker = tracker || Tracker.new
       
-      repository.read
-      new_messages = fetch_new_messages listener, notifier
-      repository.add new_messages
-    
+      fetch_new_messages mail_reader
+
+      # TODO add a view and view listener component
       puts "Start tracking..."
       tracker.open
-      track_tickets tracker, notifier, repository
+      track_tickets tracker
       tracker.quit
       puts "Finish tracking..."
-    
-      repository.save
+
     end
   
-    def fetch_new_messages listener, notifier
-      messages = listener.last_messages_received
-      messages.reject{ |m| m.error.nil? }.each do |m|
-        notifier.notify "No entiendo tu idioma :)", "Vaaya lo siento :P no entiendo el origen, destino o fecha que me indicas esto es lo que me has enviado:\n #{m.text}\n. Recuerda no responder a este mensaje.\n Te paso un ejemplo: valencia madrid 10/12/2017"
-      end
-      ok_messages = messages.select{ |m| m.error.nil? }
-      ok_messages.each do |m|
-        notifier.notify "Mensaje recibido!", "He recibido la orden para #{m.origin}-#{m.destination} el #{m.date}"
-      end
-      ok_messages
+    def fetch_new_messages  mail_reader
+      messages =  mail_reader.last_messages_received
+      @listeners.each { |l| l.on_new_messages messages }
+      messages.select{ |m| m.error.nil? }
     end
   
-    def track_tickets tracker, notifier, repository
-      repository.get(:all).each do |m|
+    def track_tickets tracker
+      @repository.get(:all).each do |m|
         if tracker.avaiable_tickets_in? m
-          notifier.notify "¡Biennn ya están aquí!", "¡Ya están disponibles los billetes #{m.origin}-#{m.destination} para el #{m.date}!"
-          repository.delete m.identifier
+          @listeners.each { |l| l.on_ticket_found m }
           puts "Avaiable tickes for #{m.origin}-#{m.destination} on #{m.date}"
         else
           puts "Not avaiable tickes for #{m.origin}-#{m.destination} on #{m.date}"
