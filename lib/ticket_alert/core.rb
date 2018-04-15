@@ -1,4 +1,4 @@
-require "ticket_alert/mail_listener"
+require "ticket_alert/mail_reader"
 require "ticket_alert/tracker"
 require "ticket_alert/notifier"
 require "ticket_alert/repository"
@@ -10,7 +10,7 @@ module TicketAlert
 
     def start repository=nil, listener=nil, tracker=nil, notifier=nil
       notifier = notifier || Notifier.new(:default)
-      listener = listener || MailListener.new(:default)
+      listener = listener || MailReader.new(:default)
       repository = repository || Repository.new
       tracker = tracker || Tracker.new
       
