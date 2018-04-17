@@ -5,7 +5,7 @@ module TicketAlert
   class RepositoryListener
 
     def initialize(repository=nil)
-      @repository = repository || repository.new
+      @repository = repository || Repository.new
     end
 
     def on_new_messages(message_list)
