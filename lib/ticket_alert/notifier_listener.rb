@@ -4,7 +4,7 @@ module TicketAlert
 
   class NotifierListener
 
-    def initialize(notifier)
+    def initialize(notifier=nil)
       @notifier = notifier || Notifier.new
     end
 
