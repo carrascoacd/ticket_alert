@@ -1,6 +1,6 @@
 require 'ticket_alert'
 
-describe TicketAlert::DependencyInjector, here: true do
+describe TicketAlert::DependencyInjector do
   
   let(:dependency_injector) { TicketAlert::DependencyInjector.instance }
 

@@ -22,4 +22,11 @@ describe TicketAlert::NotifierListener do
     expect(notifier).to have_received(:notify)
   end
 
+  it "send an ok notification" do
+    message = TicketAlert::Message.new " madrid valencia 10/12/2017"
+    allow(notifier).to receive(:notify)
+    @listener.on_ticket_found message
+    expect(notifier).to have_received(:notify)
+  end
+
 end
