@@ -12,7 +12,7 @@ describe TicketAlert::NotifierListener do
     message = TicketAlert::Message.new " madrid valencia 10/12/2017"
     allow(notifier).to receive(:notify)
     @listener.on_new_messages [message]
-    expect(notifier).to have_received(:notify).with("Mensaje recibido!", "He recibido la orden para MADRID-VALENCIA el 10/12/2017")
+    expect(notifier).to have_received(:notify)
   end
 
   it "send an error notification" do

@@ -9,7 +9,7 @@ module TicketAlert
       @browser = Watir::Browser.new browser_name.to_sym
     end
 
-    def avaiable_tickets_in? message
+    def available_tickets_in? message
       @browser.goto 'http://www.renfe.com'
       @browser.input(id: 'IdOrigen').wait_until_present
       search_tickets_in message
@@ -20,7 +20,7 @@ module TicketAlert
         begin
           retries += 1
           Watir::Wait.until { @browser.p(id: 'tab-mensaje_contenido').exists? }
-          return avaiable_tickets? message
+          return available_tickets? message
         rescue Selenium::WebDriver::Error::ServerError
           sleep(1)
         end
@@ -51,19 +51,19 @@ module TicketAlert
       sleep(1)
     end
     
-    def avaiable_tickets? message
-      avaiable_tickets = false
+    def available_tickets? message
+      available_tickets = false
       begin
         Watir::Wait.until(timeout: 20) do
-          avaiable_tickets = @browser.span(:xpath, "//span[text()='AVE']").exists?
-          if avaiable_tickets and message.hour
-            avaiable_tickets = @browser.span(:xpath, 
+          available_tickets = @browser.span(:xpath, "//span[text()='AVE']").exists?
+          if available_tickets and message.hour
+            available_tickets = @browser.span(:xpath, 
               "//span[contains(@class, 'hour salida') and text()='#{message.hour.gsub(":", ".")}']").exists?
           end
         end
       rescue Watir::Wait::TimeoutError => e
       end
-      avaiable_tickets
+      available_tickets
     end
 
     def quit

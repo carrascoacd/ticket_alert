@@ -37,11 +37,11 @@ module TicketAlert
   
     def track_tickets tracker
       @repository.get(:all).each do |m|
-        if tracker.avaiable_tickets_in? m
+        if tracker.available_tickets_in? m
           @listeners.each { |l| l.on_ticket_found m }
-          puts "Avaiable tickes for #{m.origin}-#{m.destination} on #{m.date}"
+          puts "Available tickes for #{m.origin}-#{m.destination} on #{m.date}"
         else
-          puts "Not avaiable tickes for #{m.origin}-#{m.destination} on #{m.date}"
+          puts "Not available tickes for #{m.origin}-#{m.destination} on #{m.date}"
         end
       end
     end
