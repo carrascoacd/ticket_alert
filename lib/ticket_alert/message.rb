@@ -27,7 +27,7 @@ module TicketAlert
     end
 
     def to_h
-      {date: self.date, origin: self.origin, destination: self.destination, error: self.error}
+      {date: self.date, origin: self.origin, destination: self.destination, hour: self.hour, error: self.error}
     end
 
   end

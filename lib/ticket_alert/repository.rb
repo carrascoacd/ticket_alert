@@ -49,6 +49,7 @@ module TicketAlert
           m.date = v[:date]
           m.origin = v[:origin]
           m.destination = v[:destination]
+          m.hour = v[:hour]
           m.error = v[:error]        
         end
         @messages[k] = msg
