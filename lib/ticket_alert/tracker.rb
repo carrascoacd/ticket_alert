@@ -21,7 +21,7 @@ module TicketAlert
           retries += 1
           Watir::Wait.until { @browser.p(id: 'tab-mensaje_contenido').exists? }
           return available_tickets? message
-        rescue Selenium::WebDriver::Error::ServerError
+        rescue Selenium::WebDriver::Error::ServerError, Watir::Wait::TimeoutError
           sleep(1)
         end
       end
