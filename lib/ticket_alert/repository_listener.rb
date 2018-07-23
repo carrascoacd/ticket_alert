@@ -17,6 +17,7 @@ module TicketAlert
 
     def on_ticket_found(message)
       @repository.delete message.identifier
+      @repository.save
     end
   end
 

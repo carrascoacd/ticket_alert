@@ -24,8 +24,10 @@ describe TicketAlert::RepositoryListener do
   it "delete the message" do
     message = TicketAlert::Message.new " madrid valencia 10/12/2017"
     allow(repository).to receive(:delete)
+    allow(repository).to receive(:save)
     @listener.on_ticket_found message
     expect(repository).to have_received(:delete).with(message.identifier)
+    expect(repository).to have_received(:save)
   end
 
 end
