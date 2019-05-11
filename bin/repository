@@ -20,7 +20,8 @@ class RepositoryClient < Thor
 
   desc 'read', "reads all messages"
   def read
-    puts "Messages: #{@repository.read.to_h}"
+    @repository.read
+    puts "Messages: #{@repository.get(:all)}"
   end
 
   desc 'delete id', "deletes a message"

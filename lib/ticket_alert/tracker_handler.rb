@@ -10,6 +10,7 @@ module TicketAlert
 
     def initialize(listeners=nil, repository=nil)
       @repository = repository || Repository.new
+      @repository.read
       @listeners = listeners || [ NotifierListener.new, 
                                   RepositoryListener.new(@repository)]
     end
