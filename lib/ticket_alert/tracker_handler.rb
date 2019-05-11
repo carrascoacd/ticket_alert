@@ -10,7 +10,6 @@ module TicketAlert
 
     def initialize(listeners=nil, repository=nil)
       @repository = repository || Repository.new
-      @repository.read
       @listeners = listeners || [ NotifierListener.new, 
                                   RepositoryListener.new(@repository)]
     end
@@ -37,6 +36,7 @@ module TicketAlert
     end
   
     def track_tickets tracker
+      @repository.read
       @repository.get(:all).each do |m|
         if tracker.available_tickets_in? m
           @listeners.each { |l| l.on_ticket_found m }
