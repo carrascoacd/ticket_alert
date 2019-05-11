@@ -38,7 +38,7 @@ module TicketAlert
       if id == :all
         @messages = {}
       else
-        @messages.delete id
+        @messages.delete id.to_sym
       end
     end
 

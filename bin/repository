@@ -5,13 +5,30 @@ require "ticket_alert"
 require 'thor'
 
 class RepositoryClient < Thor
+  def initialize(*args)
+    @repository = TicketAlert::Repository.new
+    super(*args)
+  end
+
   desc 'add "madrid valencia 10/12/2017"', "add a message to the repository"
   def add(text_message)
     message = TicketAlert::Message.new(text_message)
-    repository = TicketAlert::Repository.new
-    repository.add(message)
-    repository.save
-    puts "New message added: #{message.to_json}"
+    @repository.add(message)
+    @repository.save
+    puts "New message added: #{message.to_h}"
+  end
+
+  desc 'read', "reads all messages"
+  def read
+    puts "Messages: #{@repository.read.to_h}"
+  end
+
+  desc 'delete id', "deletes a message"
+  def delete(id)
+    @repository.read
+    @repository.delete(id)
+    puts "Deleted: #{id}"
+    @repository.save
   end
 end
 
