@@ -14,11 +14,11 @@ module TicketAlert
                                   RepositoryListener.new(@repository)]
     end
 
-    def start mail_reader=nil, tracker=nil
-      mail_reader =  mail_reader || MailReader.new(:default)
+    def start reader=nil, tracker=nil
+      reader = reader || MailReader.new(:default)
       tracker = tracker || Tracker.new
       
-      fetch_new_messages mail_reader
+      #fetch_new_messages reader
 
       # TODO add a view and view listener component
       puts "Start tracking..."
@@ -29,8 +29,8 @@ module TicketAlert
 
     end
   
-    def fetch_new_messages  mail_reader
-      messages =  mail_reader.last_messages_received
+    def fetch_new_messages reader
+      messages =  reader.last_messages_received
       @listeners.each { |l| l.on_new_messages messages }
       messages.select{ |m| m.error.nil? }
     end

@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require "bundler/setup"
+require "ticket_alert"
+require 'thor'
+
+class RepositoryClient < Thor
+  desc 'add "madrid valencia 10/12/2017"', "add a message to the repository"
+  def add(text_message)
+    message = TicketAlert::Message.new(text_message)
+    repository = TicketAlert::Repository.new
+    repository.add(message)
+    repository.save
+    puts "New message added: #{message.to_json}"
+  end
+end
+
+RepositoryClient.start(ARGV)
