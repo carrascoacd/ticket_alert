@@ -35,6 +35,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-mocks", "~> 3.7.0"
   spec.add_development_dependency "rubocop", "~> 0.6"
 
+  spec.add_dependency "selenium-webdriver", "~> 3.6.0"
   spec.add_dependency "watir", "~> 6.8.4"
   spec.add_dependency "mail", "~> 2.7.0"
   spec.add_dependency "dotenv", "~> 2.2.1"
