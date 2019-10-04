@@ -16,6 +16,7 @@ describe TicketAlert::TrackerHandler do
   it "find available tickes for stored messages in repository and delete them" do
     messages = [TicketAlert::Message.new("valencia madrid 29/03/2018")]
     allow(repository).to receive(:get).with(:all).and_return(messages)
+    allow(repository).to receive(:read)
     new_messages = []
     allow(mail_reader).to receive(:last_messages_received).and_return(new_messages)
     allow(tracker).to receive(:available_tickets_in?).and_return(true)
@@ -30,6 +31,7 @@ describe TicketAlert::TrackerHandler do
   it "save the message in repository if not available tickets yet" do
     messages = []
     allow(repository).to receive(:get).with(:all).and_return(messages)
+    allow(repository).to receive(:read)
     new_messages = [TicketAlert::Message.new("madrid valencia 03/03/2019")]
     allow(mail_reader).to receive(:last_messages_received).and_return(new_messages)
     allow(tracker).to receive(:available_tickets_in?).and_return(false)

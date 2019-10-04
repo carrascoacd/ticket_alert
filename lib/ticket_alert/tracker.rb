@@ -55,7 +55,7 @@ module TicketAlert
       available_tickets = false
       begin
         Watir::Wait.until(timeout: 20) do
-          available_tickets = @browser.span(:xpath, "//span[text()='AVE']").exists?
+          available_tickets = @browser.elements(:xpath, "//span[text()='AVE']").size > 3
           if available_tickets and message.hour
             available_tickets = @browser.span(:xpath, 
               "//span[contains(@class, 'hour salida') and text()='#{message.hour.gsub(":", ".")}']").exists?

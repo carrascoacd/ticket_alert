@@ -35,7 +35,7 @@ module TicketAlert
     end
 
     def delete id
-      if id == :all
+      if id.to_sym == :all
         @messages = {}
       else
         @messages.delete id.to_sym
@@ -50,7 +50,7 @@ module TicketAlert
           m.origin = v[:origin]
           m.destination = v[:destination]
           m.hour = v[:hour]
-          m.error = v[:error]        
+          m.error = v[:error]      
         end
         @messages[k] = msg
       end
